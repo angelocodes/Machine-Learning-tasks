@@ -1,0 +1,266 @@
+import pandas as pd
+import scipy.io 
+from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, f1_score
+import matplotlib.pyplot as plt
+from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier  # Importing the Decision Tree classifier
+from sklearn.model_selection import cross_val_score  # Importing cross-validation function
+import matplotlib.pyplot as plt  # Importing matplotlib for plotting
+from sklearn.ensemble import RandomForestClassifier  # Importing the Random Forest classifier
+from sklearn.svm import SVC  # Importing the Support Vector Classifier
+
+
+
+data=scipy.io.loadmat('coursework3data.mat')
+
+
+data
+
+data = data['z']  # Extracting the array from the dictionary
+
+# Converting the array to a DataFrame
+data = pd.DataFrame(data, columns=['Feature_1', 'Feature_2', 'Class'])
+
+# Displaying the DataFrame
+data
+
+
+# Step 2: Data Exploration
+print("Number of samples:", len(data))
+print("Number of features:", len(data.columns) - 1)  # Excluding the target column
+print("Number of classes:", data['Class'].nunique())
+
+
+# Step 3: Extract features and target variable
+X = data.iloc[:, :-1]  # Features (all columns except the last one)
+y = data.iloc[:, -1]   # Target variable (last column)
+
+
+# Step 4: Split the dataset into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+
+# Step 5: Implementing the Decision Tree classifier using 10-fold cross-validation
+
+# Define the Decision Tree classifier
+decision_tree = DecisionTreeClassifier()
+
+# Perform 10-fold cross-validation
+scores_accuracy = cross_val_score(decision_tree, X, y, cv=10, scoring='accuracy')
+scores_precision = cross_val_score(decision_tree, X, y, cv=10, scoring='precision')
+scores_f1 = cross_val_score(decision_tree, X, y, cv=10, scoring='f1')
+
+#printing the acuracy, precision and f1_score
+print("Decision Tree Classifier:")
+print("accuracies: ",scores_accuracy)
+print("precisions: ",scores_precision)
+print("f1: ",scores_f1)
+
+# Calculate mean scores
+mean_accuracy = scores_accuracy.mean()
+mean_precision = scores_precision.mean()
+mean_f1 = scores_f1.mean()
+
+# Print the mean scores
+print("Mean Accuracy:", mean_accuracy)
+print("Mean Precision:", mean_precision)
+print("Mean F1 Score:", mean_f1)
+
+# Step 6: Plot the classification results for the Decision Tree classifier
+plt.figure(figsize=(12, 6))
+decision_tree.fit(X, y)
+y_pred = decision_tree.predict(X)
+plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y_pred, cmap='coolwarm', edgecolors='k')
+plt.title("Decision Tree Classifier")
+plt.tight_layout()
+plt.show()
+
+
+
+#use another kind of plot here
+#plotting the classification results
+fig, axs = plt.subplots(3)
+x=[1,2,3,4,5,6,7,8,9,10]
+fig.suptitle('classification plots')
+axs[0].plot(x, scores_accuracy)
+axs[0].set_title('Accuracy')
+axs[1].plot(x, scores_precision)
+axs[1].set_title('Precision')
+axs[2].plot(x,scores_f1)
+axs[2].set_title('F1 scores')
+plt.subplots_adjust(hspace=0.5)
+
+
+
+
+
+
+# Step 5: Implementing the Random Forest classifier using 10-fold cross-validation
+
+# Define the Random Forest classifier
+random_forest = RandomForestClassifier()
+
+# Perform 10-fold cross-validation
+scores_accuracy = cross_val_score(random_forest, X, y, cv=10, scoring='accuracy')
+scores_precision = cross_val_score(random_forest, X, y, cv=10, scoring='precision')
+scores_f1 = cross_val_score(random_forest, X, y, cv=10, scoring='f1')
+
+#printing the acuracy, precision and f1_score
+print("Random Forest Classifier:")
+print("accuracies: ",scores_accuracy)
+print("precisions: ",scores_precision)
+print("f1: ",scores_f1)
+
+# Calculate mean scores
+mean_accuracy = scores_accuracy.mean()
+mean_precision = scores_precision.mean()
+mean_f1 = scores_f1.mean()
+
+# Print the mean scores
+print("Random Forest Classifier:")
+print("Mean Accuracy:", mean_accuracy)
+print("Mean Precision:", mean_precision)
+print("Mean F1 Score:", mean_f1)
+
+# Step 6: Plot the classification results for the Random Forest classifier
+plt.figure(figsize=(12, 6))
+random_forest.fit(X, y)
+y_pred = random_forest.predict(X)
+plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y_pred, cmap='coolwarm', edgecolors='k')
+plt.title("Random Forest Classifier")
+plt.tight_layout()
+plt.show()
+
+
+#plotting the classification results(change the plots)
+fig, axs = plt.subplots(3)
+x=[1,2,3,4,5,6,7,8,9,10]
+fig.suptitle('classification plots')
+axs[0].plot(x, scores_accuracy)
+axs[0].set_title('Accuracy')
+axs[1].plot(x, scores_precision)
+axs[1].set_title('Precision')
+axs[2].plot(x,scores_f1)
+axs[2].set_title('F1 scores')
+plt.subplots_adjust(hspace=0.5)
+
+
+
+
+
+
+
+# Step 5: Implementing the Linear SVM classifier using 10-fold cross-validation
+
+# Define the Linear SVM classifier with linear kernel
+linear_svm = SVC(kernel='linear')
+
+# Perform 10-fold cross-validation
+scores_accuracy = cross_val_score(linear_svm, X, y, cv=10, scoring='accuracy')
+scores_precision = cross_val_score(linear_svm, X, y, cv=10, scoring='precision')
+scores_f1 = cross_val_score(linear_svm, X, y, cv=10, scoring='f1')
+
+
+#printing the acuracy, precision and f1_score
+print("Linear SVM  Classifier:")
+print("accuracies: ",scores_accuracy)
+print("precisions: ",scores_precision)
+print("f1: ",scores_f1)
+
+# Calculate mean scores
+mean_accuracy = scores_accuracy.mean()
+mean_precision = scores_precision.mean()
+mean_f1 = scores_f1.mean()
+
+# Print the mean scores
+print("Linear SVM Classifier:")
+print("Mean Accuracy:", mean_accuracy)
+print("Mean Precision:", mean_precision)
+print("Mean F1 Score:", mean_f1)
+
+# Step 6: Plot the classification results for the Linear SVM classifier
+plt.figure(figsize=(12, 6))
+linear_svm.fit(X, y)
+y_pred = linear_svm.predict(X)
+plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y_pred, cmap='coolwarm', edgecolors='k')
+plt.title("Linear SVM Classifier")
+plt.tight_layout()
+plt.show()
+
+
+#plotting the classification results(change the plots)
+fig, axs = plt.subplots(3)
+x=[1,2,3,4,5,6,7,8,9,10]
+fig.suptitle('classification plots')
+axs[0].plot(x, scores_accuracy)
+axs[0].set_title('Accuracy')
+axs[1].plot(x, scores_precision)
+axs[1].set_title('Precision')
+axs[2].plot(x,scores_f1)
+axs[2].set_title('F1 scores')
+plt.subplots_adjust(hspace=0.5)
+
+
+
+
+
+# Step 5: Implementing the SVM with RBF kernel classifier using 10-fold cross-validation
+
+# Define the SVM with RBF kernel classifier
+svm_rbf = SVC(kernel='rbf')
+
+# Perform 10-fold cross-validation
+scores_accuracy = cross_val_score(svm_rbf, X, y, cv=10, scoring='accuracy')
+scores_precision = cross_val_score(svm_rbf, X, y, cv=10, scoring='precision')
+scores_f1 = cross_val_score(svm_rbf, X, y, cv=10, scoring='f1')
+
+#printing the acuracy, precision and f1_score
+print("SVM with RBF Classifier:")
+print("accuracies: ",scores_accuracy)
+print("precisions: ",scores_precision)
+print("f1: ",scores_f1)
+
+# Calculate mean scores
+mean_accuracy = scores_accuracy.mean()
+mean_precision = scores_precision.mean()
+mean_f1 = scores_f1.mean()
+
+# Print the mean scores
+print("SVM with RBF Kernel Classifier:")
+print("Mean Accuracy:", mean_accuracy)
+print("Mean Precision:", mean_precision)
+print("Mean F1 Score:", mean_f1)
+
+# Step 6: Plot the classification results for the SVM with RBF kernel classifier
+plt.figure(figsize=(12, 6))
+svm_rbf.fit(X, y)
+y_pred = svm_rbf.predict(X)
+plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=y_pred, cmap='coolwarm', edgecolors='k')
+plt.title("SVM with RBF Kernel Classifier")
+plt.tight_layout()
+plt.show()
+
+
+#plotting the classification results(change the plots)
+fig, axs = plt.subplots(3)
+x=[1,2,3,4,5,6,7,8,9,10]
+fig.suptitle('classification plots')
+axs[0].plot(x, scores_accuracy)
+axs[0].set_title('Accuracy')
+axs[1].plot(x, scores_precision)
+axs[1].set_title('Precision')
+axs[2].plot(x,scores_f1)
+axs[2].set_title('F1 scores')
+plt.subplots_adjust(hspace=0.5)
+
+
+
+
+
+
+
+
